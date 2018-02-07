@@ -4,7 +4,7 @@ from werkzeug import secure_filename
 app = Flask(__name__)
 
 UPLOAD_FOLDER = './uploads'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'JPG', 'gif', 'GIF'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = os.urandom(24)
 
