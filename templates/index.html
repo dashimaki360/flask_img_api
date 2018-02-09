@@ -5,6 +5,9 @@
   <input type="submit" value="送信" class="btn">
 </fomr>
   {% if img_url %}
-<p><img src="{{ img_url }}"></p>
+<p><img src="{{ img_url }}" width="300"></p>
+  {% endif %}
+  {% if out_url %}
+<p><img src="{{ out_url }}" width="300"></p>
   {% endif %}
 {% endblock %}
