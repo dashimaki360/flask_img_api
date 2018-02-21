@@ -1,6 +1,10 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, jsonify, render_template, request, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
+import base64
+import json
+import requests
+import datetime
 
 import process
 
@@ -32,15 +36,38 @@ def send():
         img_file = request.files['img_file']
         if img_file and allowed_file(img_file.filename):
             # TODO add timestamp to filename
-            filename = secure_filename(img_file.filename)
+            now = datetime.datetime.now()
+            timestamp = "{0:%Y%m%d-%H%M%S}_".format(now)
+            filename = timestamp + secure_filename(img_file.filename)
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            img_file.save(img_path)
             img_url = '/uploads/' + filename
-            base64.b64encode(img_file)
+            in_img_base64 = base64.b64encode(img_file.stream.read()).decode('utf-8')
+            img_file.save(img_path)
 
+            request_dict = {
+                "requests": [
+                    {
+                        "image": in_img_base64,
+                        "features": [
+                            {
+                            }
+                        ]
+                    }
+                ]
+            }
+            print(request_dict)
+
+            res = requests.post(
+                'http://127.0.0.1:5000/img_api',
+                json.dumps(request_dict),
+                headers={'Content-Type': 'application/json'}
+                )
+            res = json.loads(res)
+            print(res)
+            out_img = base64.b64decode(res['image'].encode())
             out_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
             out_url = '/outputs/' + filename
-            proc.do(img_path, out_path)
+            out_img.save(out_path)
             return render_template('index.html', img_url=img_url, out_url=out_url)
         else:
             return ''' <p>許可されていない拡張子です</p> '''
@@ -51,22 +78,25 @@ def send():
 @app.route('/img_api', methods=['POST'])
 def imgApi():
     # parse body json
-    request.data
-    in_img_base64 = 
-    setting = 
-
+    data = json.loads(request.data)
+    print(data)
+    req = data["requests"][0]
+    in_img_base64 = req['image']
+    setting = req['featues'][0]
 
     # call img process
-    out_img_base64 = proc.do(in_img_base64, setting)
+    # out_img_base64, result = proc.do(in_img_base64, setting)
+    out_img_base64 = in_img_base64
+    result = {}
 
     # make response json
     response = {
-
+        "image": out_img_base64,
+        "result": result
     }
 
     # return
     return jsonify(response)
-
 
 
 @app.route('/uploads/<filename>')

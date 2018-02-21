@@ -6,7 +6,7 @@ import numpy as np
 class processImg():
     def __init__(self):
         '''
-        process initiarize method 
+        process initiarize method
         ex) read table file, setting, initiarize
         '''
         pass
