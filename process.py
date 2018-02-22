@@ -1,7 +1,8 @@
 import base64
-import cv2
+from io import BytesIO
 import numpy as np
 import datetime
+from PIL import Image
 
 
 class processImg():
@@ -13,16 +14,17 @@ class processImg():
         pass
 
     def readb64(self, base64_string):
-        img = base64.b64decode(base64_string)
-        npimg = np.fromstring(img, dtype=np.uint8)
-        cv_img = cv2.imdecode(npimg, 1)
-        cv2.imwrite('uploads/' + self.timestamp + '.png', cv_img)
-        return cv_img
+        im = Image.open(BytesIO(base64.b64decode(base64_string)))
+        im.save('uploads/' + self.timestamp + '.png', format='PNG')
+        return np.asarray(im)
 
-    def writeb64(self, cv_img):
-        cv2.imwrite('outputs/' + self.timestamp + '.png', cv_img)
-        retval, buffer = cv2.imencode('.png', cv_img)
-        base64_img = base64.b64encode(buffer).decode('utf-8')
+    def writeb64(self, img):
+        pilImg = Image.fromarray(img)
+        pilImg.save('outputs/' + self.timestamp + '.png', format='PNG')
+
+        buffered = BytesIO()
+        pilImg.save(buffered, format="PNG")
+        base64_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
         return base64_img
 
     def do(self, in_img_base64, setting):
@@ -30,19 +32,21 @@ class processImg():
         now = datetime.datetime.now()
         self.timestamp = "{0:%Y%m%d-%H%M%S}_".format(now)
 
-        in_img_cv = self.readb64(in_img_base64)
-        out_img_cv, result = self.yourMethod(in_img_cv, setting)
-        out_img_base64 = self.writeb64(out_img_cv)
+        in_img = self.readb64(in_img_base64)
+        out_img, result = self.yourMethod(in_img, setting)
+        out_img_base64 = self.writeb64(out_img)
         return out_img_base64, result
 
-    def yourMethod(self, in_img_cv, setting):
+    def yourMethod(self, in_img, setting):
         '''
         please write thid method
         as you like
+        image input and output is numpy array
         '''
         # this is sample
-        h, w = in_img_cv.shape[:2]
-        gray_img_cv = cv2.cvtColor(in_img_cv, cv2.COLOR_BGR2GRAY)
+        h, w = in_img.shape[:2]
+        pilImg = Image.fromarray(in_img)
+        gray_pilImg = pilImg.convert('L')
         result = {'color': 'gray',
                   'size': [w, h]}
-        return gray_img_cv, result
+        return np.asarray(gray_pilImg), result
