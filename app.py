@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask import Flask, jsonify, render_template, request
 import json
 
 import process
@@ -24,6 +24,7 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+
 @app.route('/img_api', methods=['POST'])
 def imgApi():
     # parse body json
@@ -35,8 +36,6 @@ def imgApi():
 
     # call img process
     out_img_base64, result = proc.do(in_img_base64, setting)
-    # out_img_base64 = in_img_base64
-    # result = {}
 
     # make response json
     response = {
@@ -46,21 +45,6 @@ def imgApi():
 
     # return
     return jsonify(response)
-
-
-@app.route('/test')
-def test():
-    return "testtesttest"
-
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-
-@app.route('/outputs/<filename>')
-def output_file(filename):
-    return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
 
 
 if __name__ == '__main__':
