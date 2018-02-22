@@ -24,7 +24,7 @@ function sendFileToCloudVision (event) {
   var request = {
     requests: [{
       image: {
-        content: content.replace('data:image/jpeg;base64,', '')
+        content: content.split(',')[1]
       },
       features: [{}],
     }]
