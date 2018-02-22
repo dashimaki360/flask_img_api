@@ -1,13 +1,91 @@
-{% extends "base.html" %}
-{% block content %}
-<form method="post" action="/send" enctype="multipart/form-data">
-  <input type="file" id="img_file" name="img_file" class="col-sm-4">
-  <input type="submit" value="送信" class="btn">
-</fomr>
-  {% if img_url %}
-<p><img src="{{ img_url }}" width="300"></p>
-  {% endif %}
-  {% if out_url %}
-<p><img src="{{ out_url }}" width="300"></p>
-  {% endif %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cloud Vision API Sample</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script>
+
+// ファイルアップロード 
+$(function () {
+  $('#fileform').on('submit', uploadFiles);
+});
+
+function uploadFiles (event) {
+  event.preventDefault(); // Prevent the default form post
+
+  var file = $('#fileform [name=imagefile]')[0].files[0];
+  var reader = new FileReader();
+
+  reader.onloadend = sendFileToCloudVision;
+  reader.readAsDataURL(file);
+}
+
+
+// VisionAPIの呼び出し 
+function sendFileToCloudVision (event) {
+  var content = event.target.result;
+  // 読み込んだ画像の表示
+  $('#in_img').attr('src', content);
+  
+  // リクエストの作成
+  var request = {
+    requests: [{
+      image: {
+        content: content.replace('data:image/jpeg;base64,', '')
+      },
+      features: [{}],
+    }]
+  };
+
+  // POST処理
+  $.post({
+    url: 'img_api',
+    data: JSON.stringify(request),
+    contentType: 'application/json'
+  }).fail(function (jqXHR, textStatus, errormsg) {
+    $('#results').text('error: ' + textStatus + ' ' + errormsg);
+  }).done(displayJSON);
+}
+
+// レスポンス表示
+function displayJSON (data) {
+  var contents = JSON.stringify(data, null, 4);
+  var out_img_url ="data:image/png;base64," + data['image']
+  $('#results').text(contents);
+  var evt = new Event('results-displayed');
+  evt.results = contents;
+  document.dispatchEvent(evt);
+  $('#out_img').attr('src', out_img_url);
+}
+</script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+</head>
+
+
+
+<body>
+    <section class="container">
+        <div class="page-header">
+            <h2>image API <small>image api frame</small></h2>
+        </div>
+        <!--送信フォーム表示-->
+        <form id="fileform">
+            <div class="form-group">
+                <label for="InputFile">画像ファイルを選んでください</label>
+                <input type="file" id="InputFile" name="imagefile">
+            </div>
+            <button type="submit" class="btn btn-default" name="submit" value="Submit">send</button>
+        </form>
+        <hr>
+        <!--レスポンス結果表示-->
+        <img id="in_img" src="">
+        <img id="out_img" src="">
+        <pre id="results" class="bg-info">ここにJSON形式で結果が表示されます</pre>
+    </section>
+</body>
+
+</html>

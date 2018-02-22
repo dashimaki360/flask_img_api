@@ -1,6 +1,7 @@
 import base64
 import cv2
 import numpy as np
+import datetime
 
 
 class processImg():
@@ -15,18 +16,23 @@ class processImg():
         img = base64.b64decode(base64_string)
         npimg = np.fromstring(img, dtype=np.uint8)
         cv_img = cv2.imdecode(npimg, 1)
+        cv2.imwrite('uploads/' + self.timestamp + '.png', cv_img)
         return cv_img
 
     def writeb64(self, cv_img):
-        retval, buffer = cv2.imencode('.jpg', cv_img)
-        base64_img = base64.b64encode(buffer)
+        cv2.imwrite('outputs/' + self.timestamp + '.png', cv_img)
+        retval, buffer = cv2.imencode('.png', cv_img)
+        base64_img = base64.b64encode(buffer).decode('utf-8')
         return base64_img
 
     def do(self, in_img_base64, setting):
-        # sample
-        in_img_cv = self.read64(in_img_base64)
+        # get timestamp
+        now = datetime.datetime.now()
+        self.timestamp = "{0:%Y%m%d-%H%M%S}_".format(now)
+
+        in_img_cv = self.readb64(in_img_base64)
         out_img_cv, result = self.yourMethod(in_img_cv, setting)
-        out_img_base64 = self.write64(out_img_cv)
+        out_img_base64 = self.writeb64(out_img_cv)
         return out_img_base64, result
 
     def yourMethod(self, in_img_cv, setting):
@@ -34,7 +40,8 @@ class processImg():
         please write thid method
         as you like
         '''
-        h, w = in_img_cv.shape[0, 1]
+        # this is sample
+        h, w = in_img_cv.shape[:2]
         gray_img_cv = cv2.cvtColor(in_img_cv, cv2.COLOR_BGR2GRAY)
         result = {'color': 'gray',
                   'size': [w, h]}
