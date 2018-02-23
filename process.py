@@ -13,6 +13,20 @@ class processImg():
         '''
         pass
 
+    def yourMethod(self, in_img, setting):
+        '''
+        please write thid method
+        as you like
+        image input and output is numpy array
+        '''
+        # this is sample
+        h, w = in_img.shape[:2]
+        pilImg = Image.fromarray(in_img)
+        gray_pilImg = pilImg.convert('L')
+        result = {'color': 'gray',
+                  'size': [w, h]}
+        return np.asarray(gray_pilImg), result
+
     def readb64(self, base64_string):
         im = Image.open(BytesIO(base64.b64decode(base64_string)))
         im.save('uploads/' + self.timestamp + '.png', format='PNG')
@@ -37,16 +51,3 @@ class processImg():
         out_img_base64 = self.writeb64(out_img)
         return out_img_base64, result
 
-    def yourMethod(self, in_img, setting):
-        '''
-        please write thid method
-        as you like
-        image input and output is numpy array
-        '''
-        # this is sample
-        h, w = in_img.shape[:2]
-        pilImg = Image.fromarray(in_img)
-        gray_pilImg = pilImg.convert('L')
-        result = {'color': 'gray',
-                  'size': [w, h]}
-        return np.asarray(gray_pilImg), result

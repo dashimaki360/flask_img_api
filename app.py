@@ -1,23 +1,9 @@
 from flask import Flask, jsonify, render_template, request
 import json
-
 import process
-
 
 app = Flask(__name__)
 proc = process.processImg()
-
-UPLOAD_FOLDER = './uploads'
-OUTPUT_FOLDER = './outputs'
-ALLOWED_EXTENSIONS = set(['png', 'PNG', 'jpg', 'JPG', 'gif', 'GIF'])
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @app.route('/')
