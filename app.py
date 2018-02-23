@@ -15,7 +15,6 @@ def index():
 def imgApi():
     # parse body json
     data = json.loads(request.data)
-    print(data)
     req = data["requests"][0]
     in_img_base64 = req['image']['content']
     setting = req['features'][0]
@@ -35,4 +34,4 @@ def imgApi():
 
 if __name__ == '__main__':
     app.debug = True
-    app.run()
+    app.run(host='0.0.0.0')

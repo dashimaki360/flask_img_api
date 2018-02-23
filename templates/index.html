@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="ja">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cloud Vision API Sample</title>
+    <title>Flask Image API</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="{{url_for('static', filename='main.js')}}"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -16,19 +14,19 @@
         <div class="page-header">
             <h2>image API <small>image api frame</small></h2>
         </div>
-        <!--送信フォーム表示-->
+        <!--send form-->
         <form id="fileform">
             <div class="form-group">
-                <label for="InputFile">画像ファイルを選んでください</label>
+                <label for="InputFile">choose image file</label>
                 <input type="file" id="InputFile" name="imagefile">
             </div>
             <button type="submit" class="btn btn-default" name="submit" value="Submit">send</button>
         </form>
         <hr>
-        <!--レスポンス結果表示-->
+        <!--responce-->
         <img id="in_img" src="">
         <img id="out_img" src="">
-        <pre id="results" class="bg-info">ここにJSON形式で結果が表示されます</pre>
+        <pre id="results" class="bg-info">JSON style result</pre>
     </section>
 </body>
 
