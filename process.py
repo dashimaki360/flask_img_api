@@ -30,7 +30,7 @@ class processImg():
     def do(self, in_img_base64, setting):
         # get timestamp
         now = datetime.datetime.now()
-        self.timestamp = "{0:%Y%m%d-%H%M%S}_".format(now)
+        self.timestamp = "{0:%Y%m%d-%H%M%S}".format(now)
 
         in_img = self.readb64(in_img_base64)
         out_img, result = self.yourMethod(in_img, setting)
