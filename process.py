@@ -3,6 +3,7 @@ from io import BytesIO
 import numpy as np
 import datetime
 from PIL import Image
+import cv2
 
 
 class processImg():
@@ -19,13 +20,31 @@ class processImg():
         as you like
         image input and output is numpy array
         '''
-        # this is sample
+        # face mask app setting
+        CASCADE_PATH = "sample/haarcascade_frontalface_default.xml"
+        mask = cv2.imread("sample/shirotan.jpg")
+
         h, w = in_img.shape[:2]
+        img = in_img.copy()
+        cascade = cv2.CascadeClassifier(CASCADE_PATH)
+        facerect = cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=1, minSize=(10, 10))
+        num_face = len(facerect)
+        if num_face > 0:
+            for rect in facerect:
+                resize_mask = cv2.resize(mask, tuple(rect[2:4]))
+                img[rect[1]:(rect[1]+rect[3]), rect[0]:(rect[0]+rect[2])] = resize_mask
+        result = {'mask': 'shirotan',
+                  'num_face': num_face,
+                  'size': [w, h]}
+        '''
+        # this is sample
         pilImg = Image.fromarray(in_img)
         gray_pilImg = pilImg.convert('L')
         result = {'color': 'gray',
                   'size': [w, h]}
-        return np.asarray(gray_pilImg), result
+        '''
+        return np.asarray(img), result
+
 
     def readb64(self, base64_string):
         im = Image.open(BytesIO(base64.b64decode(base64_string)))

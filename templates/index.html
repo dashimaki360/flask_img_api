@@ -17,16 +17,17 @@
         <!--send form-->
         <form id="fileform">
             <div class="form-group">
-                <label for="InputFile">choose image file</label>
+                <label for="InputFile">choose image file. DONT SEND BIG IMAGE > 1MB</label>
                 <input type="file" id="InputFile" name="imagefile">
             </div>
             <button type="submit" class="btn btn-default" name="submit" value="Submit">send</button>
         </form>
         <hr>
         <!--responce-->
-        <img id="in_img" src="">
-        <img id="out_img" src="">
+        <img id="in_img"  src="/static/sample_befor.jpg">
+        <img id="out_img" src="/static/sample_after.jpg">
         <pre id="results" class="bg-info">JSON style result</pre>
+    code: https://github.com/dashimaki360/flask_img_api
     </section>
 </body>
 

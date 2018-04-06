@@ -13,8 +13,6 @@ function uploadFiles (event) {
   reader.readAsDataURL(file);
 }
 
-
-// VisionAPIの呼び出し 
 function sendFileToCloudVision (event) {
   var content = event.target.result;
   // 読み込んだ画像の表示
