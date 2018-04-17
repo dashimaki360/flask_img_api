@@ -40,7 +40,7 @@ function sendFileToCloudVision (event) {
 
 // レスポンス表示
 function displayJSON (data) {
-  var contents = JSON.stringify(data, null, 4);
+  var contents = JSON.stringify(data['result'], null, 4);
   var out_img_url ="data:image/png;base64," + data['image']
   $('#results').text(contents);
   var evt = new Event('results-displayed');

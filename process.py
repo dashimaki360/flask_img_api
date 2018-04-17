@@ -24,7 +24,8 @@ class processImg():
         CASCADE_PATH = "sample/haarcascade_frontalface_default.xml"
         mask = cv2.imread("sample/shirotan.jpg")
 
-        h, w = in_img.shape[:2]
+        h, w, ch = in_img.shape
+        print h, w, ch
         img = in_img.copy()
         cascade = cv2.CascadeClassifier(CASCADE_PATH)
         facerect = cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=1, minSize=(10, 10))
@@ -37,9 +38,10 @@ class processImg():
                   'num_face': num_face,
                   'size': [w, h]}
         '''
-        # this is sample
+        # this is cvt to gray scale sample
+        # not use cv2
         pilImg = Image.fromarray(in_img)
-        gray_pilImg = pilImg.convert('L')
+        img = pilImg.convert('L')
         result = {'color': 'gray',
                   'size': [w, h]}
         '''
@@ -65,7 +67,7 @@ class processImg():
         now = datetime.datetime.now()
         self.timestamp = "{0:%Y%m%d-%H%M%S}".format(now)
 
-        in_img = self.readb64(in_img_base64)
+        in_img = self.readb64(in_img_base64)[:,:,:3] #chanel is RGB only
         out_img, result = self.yourMethod(in_img, setting)
         out_img_base64 = self.writeb64(out_img)
         return out_img_base64, result
